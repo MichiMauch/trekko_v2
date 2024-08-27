@@ -53,13 +53,13 @@ export const getStaticProps: GetStaticProps<ActivityPageProps> = async ({ params
 
     // Reduziere die Anzahl der Wegpunkte, indem du nur jeden 2. Punkt verwendest
     const reducedWaypoints = activity.waypoints
-      .filter((_, index) => index % 2 === 0)
-      .map((waypoint) => ({
-        lat: waypoint.lat,
-        lon: waypoint.lon,
-        ele: waypoint.ele ?? 0, // Standardwert verwenden, falls ele fehlt
-      }));
-
+    .filter((_, index) => index % 2 === 0)
+    .map((waypoint) => ({
+      lat: waypoint.lat,
+      lon: waypoint.lon,
+      ele: (waypoint as Waypoint).ele, // Zwinge TypeScript, dies als Waypoint zu interpretieren
+    }));
+  
     return {
       props: {
         activity: {
