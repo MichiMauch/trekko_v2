@@ -15,20 +15,24 @@ const ActivityFilter: React.FC = () => {
   {/* Flex-Container für die Dropdown-Felder und den Button */}
   <div className="flex flex-col lg:flex-row gap-4 w-full justify-center lg:justify-start">
     <div className="w-full lg:w-auto lg:flex-grow flex justify-between gap-4">
-      <select 
-        className="select select-bordered w-full lg:flex-grow" 
-      >
-        <option disabled selected>Who shot first?</option>
-        <option>Han Solo</option>
-        <option>Greedo</option>
-      </select>
-      <select 
-        className="select select-bordered w-full lg:flex-grow" 
-      >
-        <option disabled selected>Who shot first?</option>
-        <option>Han Solo</option>
-        <option>Greedo</option>
-      </select>
+    <select 
+  className="select select-bordered w-full lg:flex-grow"
+  defaultValue=""
+>
+  <option value="" disabled>Who shot first?</option>
+  <option value="Han Solo">Han Solo</option>
+  <option value="Greedo">Greedo</option>
+</select>
+
+<select 
+  className="select select-bordered w-full lg:flex-grow"
+  defaultValue=""
+>
+  <option value="" disabled>Who shot first?</option>
+  <option value="Han Solo">Han Solo</option>
+  <option value="Greedo">Greedo</option>
+</select>
+
     </div>
     <button className="btn btn-primary w-full lg:w-auto lg:flex-grow">Filter anwenden</button>
   </div>
