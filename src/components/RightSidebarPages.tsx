@@ -44,28 +44,31 @@ const formatTimeHour = (timestamp: number): string => {
 const RightSidebarPages: React.FC<RightSidebarPagesProps> = ({ slug, endLocationCity, startLocationCity, distance, movingTime, duration, startTime, endTime, elevationGain, elevationLoss }) => {
   
   const downloadGPX = async () => {
-    try {
-      const response: Response = await fetch(`/api/download-gpx/${slug}`);
-      if (!response.ok) {
-        throw new Error('Fehler beim Download der GPX-Datei');
-      }
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `${slug}.gpx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error('Unbekannter Fehler beim Download der GPX-Datei');
+    if (typeof window !== 'undefined') {
+      try {
+        const response: Response = await fetch(`/api/download-gpx/${slug}`);
+        if (!response.ok) {
+          throw new Error('Fehler beim Download der GPX-Datei');
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `${slug}.gpx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error(error.message);
+        } else {
+          console.error('Unbekannter Fehler beim Download der GPX-Datei');
+        }
       }
     }
   };
+  
 
   return (
     <div className="bg-terziary w-full lg:flex-grow mx-auto h-full flex flex-col space-y-px">
