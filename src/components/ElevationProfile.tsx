@@ -9,22 +9,23 @@ import {
   Legend,
   Filler,
   Plugin,
+  ChartOptions,
+  TooltipItem,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { translate } from '../utils/translate'; // Importiere die translate-Funktion
 
-
 ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip, Legend, Filler);
 
-const verticalLinePlugin: Plugin = {
+const verticalLinePlugin: Plugin<'line'> = {
   id: 'verticalLinePlugin',
   afterDraw: (chart) => {
     const chartArea = chart.chartArea;
     const ctx = chart.ctx;
     const tooltip = chart.tooltip;
 
-    if (tooltip?._active?.length) {
-      const activePoint = tooltip._active[0];
+    if (Array.isArray(tooltip?.active) && tooltip?.active.length) {
+      const activePoint = tooltip.active[0] as TooltipItem<'line'>;
       const x = activePoint.element.x;
 
       ctx.save();
@@ -108,11 +109,11 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
     ],
   };
 
-  const options = {
-    maintainAspectRatio: false, // Deaktiviert das feste Höhe-Breite-Verhältnis
+  const options: ChartOptions<'line'> = {
+    maintainAspectRatio: false,
     scales: {
       x: {
-        type: 'linear',
+        type: 'linear', 
         position: 'bottom',
         title: {
           display: true,
@@ -121,14 +122,15 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
         min: 0,
         max: distance,
         ticks: {
-          callback: function (value) {
-            return `${value.toFixed(1)} km`; // Formatierung für Kilometer
+          callback: function (tickValue: string | number) {
+            return `${Number(tickValue).toFixed(1)} km`;
           },
-          stepSize: distance <= 15 ? 1 : distance <= 40 ? 2 : 5, // Dynamische Schrittgröße basierend auf der Gesamtdistanz
+          stepSize: distance <= 15 ? 1 : distance <= 40 ? 2 : 5,
         },
         grid: {
-          drawBorder: false,
-          color: 'rgba(0,0,0,0.1)', // Farbe des Rasters
+          drawOnChartArea: true, // Gültige Eigenschaft, die die Rasterlinien auf der Diagrammfläche zeichnet
+          color: 'rgba(0,0,0,0.1)',
+          //drawBorder: false, // Verschiebe diese Eigenschaft hierher, wenn sie notwendig ist
         },
       },
       y: {
@@ -137,13 +139,16 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
           text: '',
         },
         ticks: {
-          callback: function (value) {
-            return `${value.toFixed(0)} m`; // Formatierung für Meter
+          callback: function (tickValue: string | number) { // Akzeptiere 'string | number'
+            return `${Number(tickValue).toFixed(1)} km`;
           },
+          stepSize: distance <= 15 ? 1 : distance <= 40 ? 2 : 5,
         },
+        
         grid: {
-          drawBorder: false,
-          color: 'rgba(0,0,0,0.1)', // Farbe des Rasters
+          drawOnChartArea: true,
+          color: 'rgba(0,0,0,0.1)',
+          //drawBorder: false, // Verschiebe diese Eigenschaft hierher, wenn sie notwendig ist
         },
       },
     },
@@ -155,9 +160,9 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
         enabled: true,
         intersect: false,
         callbacks: {
-          label: function (tooltipItem) {
-            const ele = tooltipItem.raw;
-            const distance = tooltipItem.label;
+          label: function (tooltipItem: TooltipItem<'line'>) {
+            const ele = tooltipItem.raw as number;
+            const distance = tooltipItem.label as string;
             return `${translate('Distance')}: ${distance} km, ${translate('Elevation (m)')}: ${ele} m`;
           },
         },
@@ -166,9 +171,9 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
   };
   
   return (
-<div className="h-[200px] md:h-[300px]">
-  <Line ref={chartRef} data={data} options={options} plugins={[verticalLinePlugin]} />
-</div>
+    <div className="h-[200px] md:h-[300px]">
+      <Line ref={chartRef} data={data} options={options} plugins={[verticalLinePlugin]} />
+    </div>
   );
 };
 
