@@ -52,7 +52,13 @@ export const getStaticProps: GetStaticProps<ActivityPageProps> = async ({ params
     }
 
     // Reduziere die Anzahl der Wegpunkte, indem du nur jeden 2. Punkt verwendest
-    const reducedWaypoints = activity.waypoints.filter((_, index) => index % 2 === 0);
+    const reducedWaypoints = activity.waypoints
+      .filter((_, index) => index % 2 === 0)
+      .map((waypoint) => ({
+        lat: waypoint.lat,
+        lon: waypoint.lon,
+        ele: waypoint.ele ?? 0, // Standardwert verwenden, falls ele fehlt
+      }));
 
     return {
       props: {
@@ -69,6 +75,7 @@ export const getStaticProps: GetStaticProps<ActivityPageProps> = async ({ params
     };
   }
 };
+
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await getAllActivitySlugs();
