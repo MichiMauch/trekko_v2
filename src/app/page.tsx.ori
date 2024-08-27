@@ -1,0 +1,26 @@
+import Navbar from '../components/Navbar';
+import Hero from '../components/Hero';
+import RecentActivities from '../components/RecentActivities';
+import Footer from '../components/Footer';
+import RightSidebar from '../components/RightSidebar'; // Import der Sidebar-Komponente
+
+export default function Home() {
+  return (
+    <div>
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Navbar />
+        <Hero />
+        <div className="flex flex-col lg:flex-row items-start"> {/* Ensure alignment at the top */}
+          {/* Hauptinhalt */}
+          <main className="w-full lg:w-3/4 p-4">
+            <RecentActivities />
+          </main>
+
+          {/* Rechte Spalte */}
+          <RightSidebar />
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+}
