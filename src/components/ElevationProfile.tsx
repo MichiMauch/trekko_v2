@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   LineElement,
@@ -55,9 +55,18 @@ interface ElevationProfileProps {
 const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance, onHoverPoint }) => {
   const chartRef = useRef<any>(null);
 
-  // Die Farben werden hier über getComputedStyle ermittelt
-  const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || 'rgba(75,192,192,1)';
-  const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim() || 'rgba(75,192,192,0.4)';
+  // State für die Farben
+  const [primaryColor, setPrimaryColor] = useState('rgba(75,192,192,1)');
+  const [secondaryColor, setSecondaryColor] = useState('rgba(75,192,192,0.4)');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim() || 'rgba(75,192,192,1)';
+      const secondary = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color').trim() || 'rgba(75,192,192,0.4)';
+      setPrimaryColor(primary);
+      setSecondaryColor(secondary);
+    }
+  }, []);
 
   useEffect(() => {
     const chart = chartRef.current;
@@ -101,8 +110,8 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
         label: '',
         data: waypoints.map((wp) => wp.ele),
         fill: 'start',
-        backgroundColor: secondaryColor, // Nutze die CSS-Variable für den ausgefüllten Bereich
-        borderColor: primaryColor, // Nutze die CSS-Variable für die Linienfarbe
+        backgroundColor: secondaryColor,
+        borderColor: primaryColor,
         tension: 0.1,
         pointRadius: 0,
       },
@@ -113,7 +122,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
     maintainAspectRatio: false,
     scales: {
       x: {
-        type: 'linear', 
+        type: 'linear',
         position: 'bottom',
         title: {
           display: true,
@@ -128,9 +137,8 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
           stepSize: distance <= 15 ? 1 : distance <= 40 ? 2 : 5,
         },
         grid: {
-          drawOnChartArea: true, // Gültige Eigenschaft, die die Rasterlinien auf der Diagrammfläche zeichnet
+          drawOnChartArea: true,
           color: 'rgba(0,0,0,0.1)',
-          //drawBorder: false, // Verschiebe diese Eigenschaft hierher, wenn sie notwendig ist
         },
       },
       y: {
@@ -139,16 +147,13 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
           text: '',
         },
         ticks: {
-          callback: function (tickValue: string | number) { // Akzeptiere 'string | number'
-            return `${Number(tickValue).toFixed(1)} km`;
+          callback: function (tickValue: string | number) {
+            return `${Number(tickValue).toFixed(1)} m`;
           },
-          stepSize: distance <= 15 ? 1 : distance <= 40 ? 2 : 5,
         },
-        
         grid: {
           drawOnChartArea: true,
           color: 'rgba(0,0,0,0.1)',
-          //drawBorder: false, // Verschiebe diese Eigenschaft hierher, wenn sie notwendig ist
         },
       },
     },
@@ -169,7 +174,7 @@ const ElevationProfile: React.FC<ElevationProfileProps> = ({ waypoints, distance
       },
     },
   };
-  
+
   return (
     <div className="h-[200px] md:h-[300px]">
       <Line ref={chartRef} data={data} options={options} plugins={[verticalLinePlugin]} />

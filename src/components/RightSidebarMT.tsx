@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GiPathDistance } from 'react-icons/gi';
 import { MdLocationOn, MdAccessTime, MdDateRange } from 'react-icons/md';
 import { FaFileDownload } from 'react-icons/fa';
@@ -42,9 +42,16 @@ const formatTimeHour = (timestamp: number): string => {
 };
 
 const RightSidebarPages: React.FC<RightSidebarPagesProps> = ({ slug, endLocationCity, startLocationCity, distance, movingTime, duration, startTime, endTime, elevationGain, elevationLoss }) => {
-  
-  const downloadGPX = async () => {
+  const [downloadReady, setDownloadReady] = useState(false);
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
+      setDownloadReady(true);
+    }
+  }, []);
+
+  const downloadGPX = async () => {
+    if (downloadReady) {
       try {
         const response: Response = await fetch(`/api/download-gpx/${slug}`);
         if (!response.ok) {
@@ -68,7 +75,6 @@ const RightSidebarPages: React.FC<RightSidebarPagesProps> = ({ slug, endLocation
       }
     }
   };
-  
 
   return (
     <div className="bg-terziary w-full lg:flex-grow mx-auto h-full flex flex-col space-y-px">
