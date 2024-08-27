@@ -2,6 +2,10 @@ import dbConnect from './dbConnect';
 import Route from '../models/Route';
 
 interface Activity {
+  duration: number;
+  elevationLoss: number;
+  endLocation: { city: string; countryCode2: string; };
+  endTime: number;
   _id: string;
   name: string;
   type: string;

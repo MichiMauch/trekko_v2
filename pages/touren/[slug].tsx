@@ -51,7 +51,7 @@ export const getStaticProps: GetStaticProps<ActivityPageProps> = async ({ params
       };
     }
 
-    // Reduziere die Anzahl der Wegpunkte, indem du nur jeden 10. Punkt verwendest
+    // Reduziere die Anzahl der Wegpunkte, indem du nur jeden 2. Punkt verwendest
     const reducedWaypoints = activity.waypoints.filter((_, index) => index % 2 === 0);
 
     return {
@@ -69,7 +69,6 @@ export const getStaticProps: GetStaticProps<ActivityPageProps> = async ({ params
     };
   }
 };
-
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = await getAllActivitySlugs();
@@ -99,7 +98,7 @@ export default function ActivityPage({ activity }: ActivityPageProps) {
         </header>
 
         <section className="bg-white">
-        <HeroPages 
+          <HeroPages 
             title={activity.name} 
             date={formattedDate} 
             activityType={activity.type}
@@ -107,7 +106,8 @@ export default function ActivityPage({ activity }: ActivityPageProps) {
             elevationGain={activity.elevationGain}
             duration={activity.duration}
             movingTime={activity.movingTime}
-          />        </section>
+          />
+        </section>
 
         <main className="flex flex-col lg:flex-row p-4 bg-white">
           <div className="w-full lg:w-3/4 bg-white shadow-xl rounded-2xl mr-4 border border-gray-300 overflow-hidden">
@@ -121,11 +121,11 @@ export default function ActivityPage({ activity }: ActivityPageProps) {
               duration={activity.duration} 
               movingTime={activity.movingTime}
               elevationGain={activity.elevationGain}
-              elevationLoss={activity.elevationLoss}
+              elevationLoss={activity.elevationLoss} 
               startLocationCity={activity.startLocation.city}
-              endLocationCity={activity.endLocation.city}
+              endLocationCity={activity.endLocation.city} 
               slug={activity.slug}
-               />
+            />
           </div>
         </main>
 

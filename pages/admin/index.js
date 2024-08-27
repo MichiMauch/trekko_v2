@@ -21,7 +21,6 @@ const AdminPage = () => {
   const [waypoints, setWaypoints] = useState([]);
   const [originalStartTime, setOriginalStartTime] = useState(''); // Original-Startzeit
   const [originalEndTime, setOriginalEndTime] = useState(''); // Original-Endzeit
-  const [originalDuration, setOriginalDuration] = useState(''); // Original-Dauer
   const [isLocationFetched, setIsLocationFetched] = useState(false);
   const [isSaving, setIsSaving] = useState(false); // Status der Speicherung
   const [keyword, setKeyword] = useState(''); // State für das Stichwort
@@ -250,7 +249,6 @@ const AdminPage = () => {
         <p><strong>End Country:</strong> {endLocation.countryCode2}</p>
         <p><strong>Original Start Time:</strong> {originalStartTime}</p>
         <p><strong>Original End Time:</strong> {originalEndTime}</p>
-        <p><strong>Duration Difference:</strong> {originalDuration}</p>
         <div>
           <label htmlFor="keyword">Keyword:</label>
           <input
