@@ -30,11 +30,11 @@ export default function MultiDayTourPage({ tour }) {
   }
 
   // Zeitraum formatieren
-  const period = tour.period ? JSON.parse(tour.period) : null;
+  const period = tour?.period ? JSON.parse(tour.period) : null;
   const formattedPeriod = period ? `${formatDate(period.start)} - ${formatDate(period.end)}` : 'N/A';
 
   // Bewegungszeit formatieren
-  const formattedMovingTime = tour.totalMovingTime ? formatTime(tour.totalMovingTime) : 'N/A';
+  const formattedMovingTime = tour?.totalMovingTime ? formatTime(tour.totalMovingTime) : 'N/A';
 
   return (
     <div>

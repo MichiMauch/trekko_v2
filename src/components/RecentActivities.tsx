@@ -1,9 +1,14 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { getIconForActivity } from './activityIcons';
-import RouteMap from './RouteMap';
+import dynamic from 'next/dynamic';
 import { formatDate } from '../utils/dateUtils'; // Import der Funktion
-import Link from 'next/link'
+import Link from 'next/link';
+
+// Dynamischer Import der RouteMap-Komponente
+const DynamicRouteMap = dynamic(() => import('./RouteMap'), {
+  ssr: false, // Server-side Rendering deaktivieren
+});
 
 interface Activity {
   slug: any;
@@ -77,60 +82,59 @@ const RecentActivities: React.FC = () => {
           year: 'numeric',
         })} um ${time}`;
     
-        return `${formattedDate} in ${city}, ${countryCode.toUpperCase()}`;
+    return `${formattedDate} in ${city}, ${countryCode.toUpperCase()}`;
   };
 
   return (
-<div className="max-w-screen-xl mx-auto mb-4 sm:mb-0 px-0 sm:px-4 lg:px-4">
-  <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
-    {activities.slice(0, 5).map((activity) => (
-      <div key={activity._id} className="card lg:card-side bg-base-100 shadow-xl border border-gray-300 relative">
-        <Link href={`/touren/${activity.slug}`} className="w-full lg:w-1/2 h-64 m-0 p-0 block">
-          <figure className="w-full h-full">
-            <RouteMap waypoints={activity.waypoints} showZoomControls={false} showAttribution={false} />
-          </figure>
-        </Link>
-        <div className="card-body w-full lg:w-1/2 p-6 pb-0 relative">
-          <span className="absolute top-3 right-3" style={{ color: 'var(--primary-color)' }}>
-            {getIconForActivity(activity.type)}
-          </span>
-          <span className="text-gray-500 text-sm">
-            {formatDetailedDate(
-              activity.date,
-              activity.startLocation.city,
-              activity.startLocation.countryCode2,
-              activity.startTime
-            )}
-          </span>
-          <Link href={`/touren/${activity.slug}`} className="card-title font-bold block">
-            {activity.name}
-          </Link>
-          <div className="flex gap-12 mt-4 justify-start">
-            <div className="text-left w-auto flex-shrink-0">
-              <p className="text-sm text-gray-500">Distanz</p>
-              <p className="text-lg font-semibold">
-                {formatDistance(activity.distance)} km
-              </p>
-            </div>
-            <div className="text-left w-auto flex-shrink-0">
-              <p className="text-sm text-gray-500">Höhenmeter</p>
-              <p className="text-lg font-semibold">
-                {formatElevationGain(activity.elevationGain)} m
-              </p>
-            </div>
-            <div className="text-left w-auto flex-shrink-0">
-              <p className="text-sm text-gray-500">Zeit</p>
-              <p className="text-lg font-semibold">
-                {formatMovingTime(activity.movingTime)}
-              </p>
+    <div className="max-w-screen-xl mx-auto mb-4 sm:mb-0 px-0 sm:px-4 lg:px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
+        {activities.slice(0, 5).map((activity) => (
+          <div key={activity._id} className="card lg:card-side bg-base-100 shadow-xl border border-gray-300 relative">
+            <Link href={`/touren/${activity.slug}`} className="w-full lg:w-1/2 h-64 m-0 p-0 block">
+              <figure className="w-full h-full">
+                <DynamicRouteMap waypoints={activity.waypoints} showZoomControls={false} showAttribution={false} />
+              </figure>
+            </Link>
+            <div className="card-body w-full lg:w-1/2 p-6 pb-0 relative">
+              <span className="absolute top-3 right-3" style={{ color: 'var(--primary-color)' }}>
+                {getIconForActivity(activity.type)}
+              </span>
+              <span className="text-gray-500 text-sm">
+                {formatDetailedDate(
+                  activity.date,
+                  activity.startLocation.city,
+                  activity.startLocation.countryCode2,
+                  activity.startTime
+                )}
+              </span>
+              <Link href={`/touren/${activity.slug}`} className="card-title font-bold block">
+                {activity.name}
+              </Link>
+              <div className="flex gap-12 mt-4 justify-start">
+                <div className="text-left w-auto flex-shrink-0">
+                  <p className="text-sm text-gray-500">Distanz</p>
+                  <p className="text-lg font-semibold">
+                    {formatDistance(activity.distance)} km
+                  </p>
+                </div>
+                <div className="text-left w-auto flex-shrink-0">
+                  <p className="text-sm text-gray-500">Höhenmeter</p>
+                  <p className="text-lg font-semibold">
+                    {formatElevationGain(activity.elevationGain)} m
+                  </p>
+                </div>
+                <div className="text-left w-auto flex-shrink-0">
+                  <p className="text-sm text-gray-500">Zeit</p>
+                  <p className="text-lg font-semibold">
+                    {formatMovingTime(activity.movingTime)}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        ))}
       </div>
-    ))}
-  </div>
-</div>
-
+    </div>
   );
 };
 
